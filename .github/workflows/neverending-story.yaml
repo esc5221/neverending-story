@@ -2,6 +2,13 @@ name: neverending-story
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: "neverending-story"
+
 
 jobs:
   delay-and-dispatch:

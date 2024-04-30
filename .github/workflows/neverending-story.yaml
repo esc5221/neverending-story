@@ -16,7 +16,7 @@ jobs:
         run: docker-compose -f docker-compose.yaml up -d
 
       - name: Ngrok Tunnel Action (v3)
-        uses: esc5221/ngrok-tunnel-action@v1.0.1
+        uses: esc5221/ngrok-tunnel-action@v1.0.2
         with:
           timeout: 4h
           port: 8080

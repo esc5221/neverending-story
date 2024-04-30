@@ -10,7 +10,6 @@ import urllib
 class CustomHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path.endswith("/"):
-            client_ip = self.client_address[0]
             r = f"""
 <!DOCTYPE html>
 <html>
@@ -28,8 +27,13 @@ class CustomHandler(SimpleHTTPRequestHandler):
 </style>
 <body>
 <h1> Hello, I am github action </h1>
-<h3>And you are {client_ip}</h3>
-<br>
+<h3>And you are:</h3>
+<ul>
+{''.join([
+    "<li>" + content + "</li>"
+    for content in split_user_agent(self.headers.get("User-Agent", ""))
+])}
+</ul>
 """
             # add directory listing below
             r += "<h2>Directory Listing</h2>"
@@ -70,6 +74,32 @@ class CustomHandler(SimpleHTTPRequestHandler):
                 pass
 
         return guess
+
+
+def split_user_agent(input_string):
+    paren_level = 0
+    split_positions = []
+    for i, char in enumerate(input_string):
+        if char == "(":
+            paren_level += 1
+        elif char == ")":
+            paren_level -= 1
+        elif (
+            char.isupper()
+            and paren_level == 0
+            and i != 0
+            and (input_string[i - 1] == " " or input_string[i - 1] in ".,;/")
+        ):
+            split_positions.append(i)
+
+    parts = []
+    last_pos = 0
+    for pos in split_positions:
+        parts.append(input_string[last_pos:pos].strip())
+        last_pos = pos
+    parts.append(input_string[last_pos:].strip())
+
+    return parts
 
 
 def run(server_class=HTTPServer, handler_class=CustomHandler, port=8000):

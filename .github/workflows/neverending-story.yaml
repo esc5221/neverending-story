@@ -7,9 +7,21 @@ jobs:
   delay-and-dispatch:
     runs-on: ubuntu-latest
     steps:
-      - name: Wait
-        run: |
-          sleep 30
+      - name: setup repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Run server with docker-compose
+        run: docker-compose -f docker-compose.yaml up -d
+
+      - uses: luisboto/ngrok-tunnel-action@v0.1.7.2
+        with:
+          timeout: 4h
+          port: 8080
+          ngrok_authtoken: ${{ secrets.NGROK_AUTHTOKEN }}
+          tunnel_type: http
+          save_url_to_filename: tunnel_url.md
 
       - name: Dispatch next workflow run
         uses: benc-uk/workflow-dispatch@v1.2.3

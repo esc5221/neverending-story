@@ -8,6 +8,7 @@ on:
 
 concurrency:
   group: "neverending-story"
+  cancel-in-progress: true
 
 
 jobs:

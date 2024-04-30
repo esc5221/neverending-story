@@ -1,0 +1,17 @@
+name: neverending-story
+
+on:
+  workflow_dispatch:
+
+jobs:
+  delay-and-dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for 4 hours
+        run: |
+          sleep 14400  # Sleep for 4 hours (14400 seconds)
+
+      - name: Dispatch next workflow run
+        uses: benc-uk/workflow-dispatch@v1.2.3
+        with:
+          workflow: "neverending-story.yaml"
